@@ -6,14 +6,16 @@ MYNAME=`basename $0`
 
 WEBHOOKURL_FILE=${WEBHOOKURL_FILE:-$HOME/.webhook-url}
 
+echo $HEAD
 BOTNAME=${BOTNAME:-'ytani-bot'}
 CHANNEL=${CHANNEL:-'#notify-mail'}
 EMOJI=${EMOJI:-':e-mail:'}
 HEAD=${HEAD:-"[メール通知]\n"}
+echo $HEAD
 
 URL=`cat $WEBHOOKURL_FILE`
 
-MESSAGEFILE=`mktemp -t $MYNAME`
+MESSAGEFILE=`mktemp -t ${MYNAME}XXX`
 trap "rm ${MESSAGEFILE}" 0
 
 # 改行コードを変換

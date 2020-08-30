@@ -5,9 +5,9 @@
 
 SLACK_SEND_CMD=slack-send.sh
 
-CHANNEL=${CHANNEL:-'#notify-ip'}
-EMOJI=${EMOJI:-':computer:'}
-HEAD=${HEAD:-"[IPアドレス通知] `hostname`\n"}
+export CHANNEL='#notify-ip'
+export EMOJI=':computer:'
+export HEAD="[IPアドレス通知] `hostname`\n"
 
 TMP_FILE=`mktemp`
 
