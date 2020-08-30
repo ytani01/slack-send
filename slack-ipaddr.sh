@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -eu
 #
 # (c) 2020 Yoichi Tanibayashi
 #
@@ -12,6 +12,8 @@ export HEAD="[IPアドレス通知] `hostname`\n"
 TMP_FILE=`mktemp`
 
 date +'%F %T %Z' > $TMP_FILE
+echo >> $TMP_FILE
+echo -n "IP addrs: " >> $TMP_FILE
 ifconfig -a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | sed 's/^ *//' | cut -d ' ' -f 2 >> $TMP_FILE
 
 cat $TMP_FILE | $SLACK_SEND_CMD
