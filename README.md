@@ -10,6 +10,10 @@ Slackにメッセージを送るシェルスクリプト
 この``URL``を
 ``~/.webhook-url``に保存
 
+```
+https://hooks.slack.com/service/......../......../......
+```
+
 
 ## 2. Install
 
@@ -23,3 +27,7 @@ $ cd slack-send
 ```bash
 $ echo 'message' | slack-send.sh
 ```
+
+## A1. 参考
+
+* [EMOJI CHEAT SHEET](https://www.webfx.com/tools/emoji-cheat-sheet/)

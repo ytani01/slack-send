@@ -7,12 +7,9 @@ MYNAME=`basename $0`
 WEBHOOKURL_FILE=${WEBHOOKURL_FILE:-$HOME/.webhook-url}
 
 BOTNAME=${BOTNAME:-'ytani-bot'}
-#CHANNEL=${CHANNEL:-'#notify-mail'}
-#EMOJI=${EMOJI:-':e-mail:'}
-#HEAD=${HEAD:-"[メール通知]\n"}
-CHANNEL=${CHANNEL:-'#notify-ip'}
-EMOJI=${EMOJI:-':computer:'}
-HEAD=${HEAD:-"[IPアドレス通知] `hostname`\n"}
+CHANNEL=${CHANNEL:-'#notify-mail'}
+EMOJI=${EMOJI:-':e-mail:'}
+HEAD=${HEAD:-"[メール通知]\n"}
 
 URL=`cat $WEBHOOKURL_FILE`
 
