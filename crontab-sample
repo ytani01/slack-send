@@ -1,0 +1,1 @@
+@reboot		$HOME/bin/slack-ipaddr.sh > $HOME/tmp/slack-ipaddr.log 2>&1 &
