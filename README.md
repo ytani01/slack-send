@@ -31,6 +31,8 @@ $ ./setup.sh
 
 ## 3. 「slack-send.sh」
 
+任意のメッセージをSlackに送信します。
+
 ### 3.1 Usage
 
 ```bash
