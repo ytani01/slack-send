@@ -1,6 +1,8 @@
-# slack-send
+# slack-send.sh and slack-ipaddr.sh
 
 Slackにメッセージを送るシェルスクリプト
+
+応用：「slack-ipaddr.sh」IPアドレス通知
 
 
 ## 1. Setting up
@@ -27,6 +29,17 @@ $ cd slack-send
 ```bash
 $ echo 'message' | slack-send.sh
 ```
+
+## 4. 「slack-ipaddr.sh」
+
+IPアドレスをSlackに通知します。
+ラズパイなどで起動時に自動実行するようすれば、
+毎回IPアドレスをスキャンする必要がなくなります。
+
+### 自動起動の方法
+
+「crontab-sample」を参考に crontabを設定
+
 
 ## A1. 参考
 
