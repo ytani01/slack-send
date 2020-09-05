@@ -21,7 +21,9 @@ https://hooks.slack.com/service/......../......../......
 ```bash
 $ git clone https://github.com/ytani01/slack-send.git
 $ cd slack-send
+$ ./setup.sh
 ```
+
 
 ## 3. 「slack-send.sh」
 
