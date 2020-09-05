@@ -7,9 +7,13 @@ Slackにメッセージを送るシェルスクリプト
 
 ## 1. Setting up
 
-### 1.1 Slack上で、「Incomming WebHooks」Appを追加
+### 1.1 Slack上で、「Incomming WebHooks」を設定
 
-この``URL``を
+設定方法は、時期によって変化する可能性があるので、
+ネット上で検索して、
+最新の情報に従って設定して下さい。
+
+設定した``URL``を
 ``~/.webhook-url``に保存
 ```
 https://hooks.slack.com/service/......../......../......
@@ -33,6 +37,7 @@ $ ./setup.sh
 $ echo 'message' | slack-send.sh
 ```
 
+
 ## 4. 「slack-ipaddr.sh」
 
 IPアドレスをSlackに通知します。
@@ -49,6 +54,7 @@ $ slack-ipaddr.sh
 ### 4.2 自動起動の方法
 
 「crontab-sample」を参考に crontabを設定
+
 
 
 ## A1. 参考
