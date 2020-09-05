@@ -11,7 +11,6 @@ Slackにメッセージを送るシェルスクリプト
 
 この``URL``を
 ``~/.webhook-url``に保存
-
 ```
 https://hooks.slack.com/service/......../......../......
 ```
