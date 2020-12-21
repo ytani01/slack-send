@@ -35,15 +35,15 @@ usage () {
 #
 while getopts w:n:c:e:u:t:hv OPT; do
       case $OPT in
-      w) URL_FILE=$OPTARG; shift;;
-      n) BOTNAME=$OPTARG; shift;;
-      c) CHANNEL=$OPTARG; shift;;
-      e) EMOJI=$OPTARG; shift;;
-      u) URL=$OPTARG; shift;;
-      t) TITLE="[$OPTARG]\n"; shift;;
-      v) VERBOSE=yes;;
-      h) usage; exit 0;;
-      *) usage; exit 1;;
+          w) URL_FILE=$OPTARG; shift;;
+          n) BOTNAME=$OPTARG; shift;;
+          c) CHANNEL=$OPTARG; shift;;
+          e) EMOJI=$OPTARG; shift;;
+          u) URL=$OPTARG; shift;;
+          t) TITLE="[$OPTARG]\n"; shift;;
+          v) VERBOSE=yes;;
+          h) usage; exit 0;;
+          *) usage; exit 1;;
       esac
       shift
 done
@@ -67,7 +67,7 @@ if [ "$VERBOSE" = "yes" ]; then
     echo "URL=$URL"
 fi
 
-trap "rm -v $MSG_TMP" 0
+# trap "rm -v $MSG_TMP" 0
 
 if [ ! -z $1 ]; then
     cat $* > $MSG_TMP
@@ -76,8 +76,7 @@ else
     cat - > $MSG_TMP
 fi
 
-MSG1=`cat $MSG_TMP | tr '\n' '\\' | sed 's/\\\\/\\\\n/g'`
-MSG='```'${MSG1}'```'
+MSG='```'`cat $MSG_TMP`'```'
 if [ "$VERBOSE" = "yes" ]; then
     echo "MSG=$MSG"
 fi
@@ -94,4 +93,4 @@ if [ "$VERBOSE" = "yes" ]; then
 fi
 
 # send message
-curl -v -S -X POST --data-urlencode "${PAYLOAD}" $URL
+curl -v -S -X POST --data-urlencode "${PAYLOAD}" $URL 2> /dev/null
