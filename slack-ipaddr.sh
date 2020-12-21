@@ -2,16 +2,21 @@
 #
 # (c) 2020 Yoichi Tanibayashi
 #
+MYNAME=`basename $0`
+MYDIR=`dirname $0`
+
 export PATH=$PATH:/sbin:/usr/sbin:$HOME/bin
 echo $PATH
 
 SLACK_SEND_CMD=slack-send.sh
 
-export CHANNEL='#notify-ip'
-export EMOJI=':computer:'
-export HEAD="[IPアドレス通知] `hostname`\n"
+CHANNEL='#notify-ip'
+EMOJI=':computer:'
+TITLE="IPアドレス通知 `hostname`"
 
-TMP_FILE=`mktemp`
+TMP_FILE=`mktemp -t ${MYNAME}XXX`
+
+trap "rm -f $TMP_FILE" 0
 
 date +'* start: %F %T %Z' > $TMP_FILE
 uname -a >> $TMP_FILE
@@ -37,5 +42,4 @@ date +'* get: %F %T %Z' >> $TMP_FILE
 echo "[IP addr]" >> $TMP_FILE
 ifconfig -a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | sed 's/^ *//' | cut -d ' ' -f 2 >> $TMP_FILE
 
-cat $TMP_FILE | $SLACK_SEND_CMD
-rm -f $TMP_FILE
+$SLACK_SEND_CMD -c "$CHANNEL" -e "$EMOJI" -t "$TITLE" $TMP_FILE
