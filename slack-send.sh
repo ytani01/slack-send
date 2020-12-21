@@ -5,9 +5,9 @@
 MYNAME=`basename $0`
 MYDIR=`dirname $0`
 
-URL_FNAME=".webhook-url"
+WEBHOOK_URL_FNAME=".webhook-url"
 
-URL_FILE=${HOME}/${URL_FNAME}
+WEBHOOK_URL_FILE=${HOME}/${WEBHOOK_URL_FNAME}
 CHANNEL="#notify-ip"
 BOTNAME=$MYNAME
 EMOJI=":computer:"
@@ -23,6 +23,7 @@ usage () {
     echo
     echo -n "usage: $MYNAME"
     echo -n " [-w WEBHOOK_FILE]"
+    echo -n " [-n BOTNAME]"
     echo -n " [-c CHANNEL]"
     echo -n " [-e EMOJI]"
     echo -n " [-t TITLE]"
@@ -35,7 +36,7 @@ usage () {
 #
 while getopts w:n:c:e:u:t:hv OPT; do
       case $OPT in
-          w) URL_FILE=$OPTARG; shift;;
+          w) WEBHOOK_URL_FILE=$OPTARG; shift;;
           n) BOTNAME=$OPTARG; shift;;
           c) CHANNEL=$OPTARG; shift;;
           e) EMOJI=$OPTARG; shift;;
@@ -49,7 +50,7 @@ while getopts w:n:c:e:u:t:hv OPT; do
 done
 
 if [ "$VERBOSE" = "yes" ]; then
-    echo "URL_FILE=$URL_FILE"
+    echo "WEBHOOK_URL_FILE=$WEBHOOK_URL_FILE"
     echo "CHANNEL=$CHANNEL"
     echo "BOTNAME=$BOTNAME"
     echo "EMOJI=$EMOJI"
@@ -58,7 +59,7 @@ if [ "$VERBOSE" = "yes" ]; then
 fi
 
 if [ -z "$URL" ]; then
-    URL=`cat ${URL_FILE}`
+    URL=`cat ${WEBHOOK_URL_FILE}`
     if [ $? -ne 0 ]; then
         exit 1
     fi

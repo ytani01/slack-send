@@ -8,7 +8,9 @@ MYDIR=`dirname $0`
 export PATH=$PATH:/sbin:/usr/sbin:$HOME/bin
 
 SLACK_SEND_CMD=slack-send.sh
+WEBHOOK_URL_FNAME=".webhook-url"
 
+WEBHOOK_URL_FILE=${HOME}/${WEBHOOK_URL_FNAME}
 CHANNEL='#notify-ip'
 BOTNAME=$MYNAME
 EMOJI=':computer:'
@@ -30,8 +32,9 @@ usage() {
     echo
     echo -n "usage: $MYNAME"
     echo -n " [-hsv]"
+    echo -n " [-w WEBHOOK_URL_FILE]"
+    echo -n " [-n BOT_NAME]"
     echo -n " [-c CHANNEL]"
-    echo -n " [-b BOT_NAME]"
     echo -n " [-e EMODJI]"
     echo -n " [-t TITLE]"
     echo -n " [-p PORT]"
@@ -79,10 +82,11 @@ get_ipaddr() {
 #
 trap "rm -f $TMP_FILE" 0
 
-while getopts c:b:e:t:hsp:u:v OPT; do
+while getopts w:c:n:e:t:hsp:u:v OPT; do
     case $OPT in
+        w) WEBHOOK_URL_FILE=$OPTARG; shift;;
         c) CHANNEL=$OPTARG; shift;;
-        b) BOTNAME=$OPTARG; shift;;
+        n) BOTNAME=$OPTARG; shift;;
         e) EMOJI=$OPTARG; shift;;
         t) TITLE=$OPTARG; shift;;
         h) HTTP_FLAG=http;;
@@ -110,6 +114,7 @@ if [ -f /etc/os-release ]; then
 fi
 
 if [ "$VERBOSE" = "yes" ]; then
+    echo "WEBHOOK_URL_FILE=$WEBHOOK_URL_FILE"
     echo "CHANNEL=$CHANNEL"
     echo "BOTNAME=$BOTNAME"
     echo "EMOJI=$EMOJI"
@@ -154,4 +159,9 @@ fi
 
 cat $TMP_FILE
 
-$SLACK_SEND_CMD -c "$CHANNEL" -e "$EMOJI" -t "$TITLE" $TMP_FILE
+exec $SLACK_SEND_CMD -w "$WEBHOOK_URL_FILE"\
+     -n "$BOTNAME"\
+     -c "$CHANNEL"\
+     -e "$EMOJI"\
+     -t "$TITLE"\
+     $TMP_FILE
