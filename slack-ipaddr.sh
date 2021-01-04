@@ -134,6 +134,7 @@ fi
 date +'* get: %F %T %Z' >> $TMP_FILE
 echo >> $TMP_FILE
 
+echo "hostname:" `hostname` >> $TMP_FILE
 echo "IP addr: $IPADDR" >> $TMP_FILE
 echo >> $TMP_FILE
 
@@ -166,7 +167,7 @@ if [ -f /etc/os-release ]; then
     echo >> $TMP_FILE
 fi
 
-echo "\$ uname -a" >> $TMP_FILE
+echo "[ uname -a ]" >> $TMP_FILE
 uname -a >> $TMP_FILE
 
 cat $TMP_FILE | $SLACK_SEND_CMD -w "$WEBHOOK_URL_FILE"\
