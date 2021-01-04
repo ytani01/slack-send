@@ -89,7 +89,7 @@ if [ ! -z $MSG_FILE ]; then
 elif [ ! -z $1 ]; then
     echo $* > $MSG_TMP
 else
-    echo '===== Please, type message ====='
+    # echo '===== Please, type message ====='
     cat - > $MSG_TMP
 fi
 

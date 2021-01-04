@@ -170,8 +170,9 @@ fi
 echo "[ uname -a ]" >> $TMP_FILE
 uname -a >> $TMP_FILE
 
-cat $TMP_FILE | $SLACK_SEND_CMD -w "$WEBHOOK_URL_FILE"\
+$SLACK_SEND_CMD -w "$WEBHOOK_URL_FILE"\
      -n "$BOTNAME"\
      -c "$CHANNEL"\
      -e "$EMOJI"\
      -t "$TITLE"\
+     -f "$TMP_FILE"
