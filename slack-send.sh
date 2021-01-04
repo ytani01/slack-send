@@ -1,4 +1,4 @@
-#!/bin/sh -eu
+#!/bin/sh -e
 #
 # (c) Yoichi Tanibayashi
 #
@@ -6,12 +6,12 @@ MYNAME=`basename $0`
 
 WEBHOOKURL_FILE=${WEBHOOKURL_FILE:-$HOME/.webhook-url}
 
-echo $HEAD
+echo "HEAD=$HEAD"
 BOTNAME=${BOTNAME:-'ytani-bot'}
 CHANNEL=${CHANNEL:-'#notify-mail'}
 EMOJI=${EMOJI:-':e-mail:'}
 HEAD=${HEAD:-"[メール通知]\n"}
-echo $HEAD
+echo "HEAD=$HEAD"
 
 URL=`cat $WEBHOOKURL_FILE`
 
