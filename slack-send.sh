@@ -14,27 +14,36 @@ EMOJI=":computer:"
 TITLE="[NOTIFY]\n"
 URL=
 VERBOSE=no
+MSG_FILE=
 MSG_TMP=`mktemp -t ${MYNAME}XXX`
 
 #
 # functions
 #
-usage () {
+usage() {
     echo
-    echo -n "usage: $MYNAME"
+    echo "Usage:"
+    echo -n " $MYNAME"
+    echo -n " [-vh]"
     echo -n " [-w WEBHOOK_FILE]"
+    echo
+    echo -n "              "
     echo -n " [-n BOTNAME]"
     echo -n " [-c CHANNEL]"
     echo -n " [-e EMOJI]"
-    echo -n " [-t TITLE]"
-    echo " [MESSAGE_FILE]"
+    echo -n " [-t TITLE]"    
+    echo
+    echo -n "              "
+    echo -n " [-f MSGFILE]"
+    echo -n " [MSG] ..."
+    echo
     echo
 }
 
 #
 # main
 #
-while getopts w:n:c:e:u:t:hv OPT; do
+while getopts hvw:n:c:e:u:t:f: OPT; do
       case $OPT in
           w) WEBHOOK_URL_FILE=$OPTARG; shift;;
           n) BOTNAME=$OPTARG; shift;;
@@ -42,6 +51,7 @@ while getopts w:n:c:e:u:t:hv OPT; do
           e) EMOJI=$OPTARG; shift;;
           u) URL=$OPTARG; shift;;
           t) TITLE="[$OPTARG]\n"; shift;;
+          f) MSG_FILE=$OPTARG; shift;;
           v) VERBOSE=yes;;
           h) usage; exit 0;;
           *) usage; exit 1;;
@@ -55,6 +65,7 @@ if [ "$VERBOSE" = "yes" ]; then
     echo "BOTNAME=$BOTNAME"
     echo "EMOJI=$EMOJI"
     echo "TITLE=$TITLE"
+    echo "MSG_FILE=$MSG_FILE"
     echo "MSG_TMP=$MSG_TMP"
 fi
 
@@ -70,7 +81,12 @@ fi
 
 # trap "rm -v $MSG_TMP" 0
 
-if [ ! -z $1 ]; then
+if [ ! -z $MSG_FILE ]; then
+    cat $MSG_FILE > $MSG_TMP
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+elif [ ! -z $1 ]; then
     echo $* > $MSG_TMP
 else
     echo '===== Please, type message ====='
@@ -94,4 +110,4 @@ if [ "$VERBOSE" = "yes" ]; then
 fi
 
 # send message
-curl -v -S -X POST --data-urlencode "${PAYLOAD}" $URL 2> /dev/null
+exec curl -v -S -X POST --data-urlencode "${PAYLOAD}" $URL  > /dev/null 2>&1

@@ -18,7 +18,7 @@ TITLE="IP アドレス通知: `hostname`"
 
 HTTP_FLAG=
 URL=
-URL_PATH=/
+URL_PATH=
 PORT=
 VERBOSE=no
 TMP_FILE=`mktemp -t ${MYNAME}XXX`
@@ -30,22 +30,30 @@ usage() {
     echo
     echo "send IP address (and URL) to slack"
     echo
-    echo -n "usage: $MYNAME"
-    echo -n " [-hsv]"
+    echo "Usage"
+    echo -n "  $MYNAME"
+    echo -n " [-hv]"
     echo -n " [-w WEBHOOK_URL_FILE]"
+    echo
+    echo -n "                 "
     echo -n " [-n BOT_NAME]"
     echo -n " [-c CHANNEL]"
     echo -n " [-e EMODJI]"
     echo -n " [-t TITLE]"
+    echo
+    echo -n "                 "
+    echo -n " [-{H|S} "
     echo -n " [-p PORT]"
-    echo -n " [-u URL_PATH]"
+    echo -n " [-u URL_PATH] ]"
     echo
     echo
-    echo "  -h\tHTTP URL flag"
-    echo "  -s\tHTTPS URL flag"
-    echo "  -p\tport number of URL"
-    echo "  -u\tURL path"
-    echo "  -v\tverbose"
+    echo "  -H  HTTP URL flag"
+    echo "  -S  HTTPS URL flag"
+    echo "  -p  port number of URL"
+    echo "  -u  URL path"
+    echo
+    echo "  -v  verbose"
+    echo "  -h  help"
     echo
 }
 
@@ -62,7 +70,7 @@ get_ipaddr() {
 
         _IPADDR=`ifconfig -a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | sed 's/^ *//' | cut -d ' ' -f 2`
         if [ ! -z "$_IPADDR" ]; then
-            echo "$_IPADDR"
+            echo $_IPADDR | sed 's/ .*$//'
             return
         fi
 
@@ -82,18 +90,19 @@ get_ipaddr() {
 #
 trap "rm -f $TMP_FILE" 0
 
-while getopts w:c:n:e:t:hsp:u:v OPT; do
+while getopts hvw:c:n:e:t:HSp:u: OPT; do
     case $OPT in
         w) WEBHOOK_URL_FILE=$OPTARG; shift;;
         c) CHANNEL=$OPTARG; shift;;
         n) BOTNAME=$OPTARG; shift;;
         e) EMOJI=$OPTARG; shift;;
         t) TITLE=$OPTARG; shift;;
-        h) HTTP_FLAG=http;;
-        s) HTTP_FLAG=https;;
+        H) HTTP_FLAG=http;;
+        S) HTTP_FLAG=https;;
         p) PORT=$OPTARG; shift;;
         u) URL_PATH=$OPTARG; shift;;
         v) VERBOSE=yes;;
+        h) usage; exit 0;;
         *) usage; exit 1;;
     esac
     shift
@@ -123,7 +132,10 @@ if [ "$VERBOSE" = "yes" ]; then
     echo "IPADDR=$IPADDR"
 fi
 date +'* get: %F %T %Z' >> $TMP_FILE
+echo >> $TMP_FILE
+
 echo "IP addr: $IPADDR" >> $TMP_FILE
+echo >> $TMP_FILE
 
 if [ ! -z "$HTTP_FLAG" ]; then
     if [ "$HTTP_FLAG" = "http" ]; then
@@ -138,22 +150,23 @@ if [ ! -z "$HTTP_FLAG" ]; then
     if [ ! -z "$PORT" ]; then
         URL="${URL}:${PORT}"
     fi
-    URL="${URL}${URL_PATH}"
+    URL="${URL}/${URL_PATH}"
 
     if [ "$VERBOSE" = "yes" ]; then
         echo "URL=$URL"
     fi
 
+    echo "URL: $URL" >> $TMP_FILE
     echo >> $TMP_FILE
-    echo "URL:     $URL" >> $TMP_FILE
 fi
 
 if [ -f /etc/os-release ]; then
-    . /etc/os-release 
-    echo $PRETTY_NAME >> $TMP_FILE
+    . /etc/os-release
+    echo "OS: $PRETTY_NAME" >> $TMP_FILE
+    echo >> $TMP_FILE
 fi
 
-echo >> $TMP_FILE
+echo "\$ uname -a" >> $TMP_FILE
 uname -a >> $TMP_FILE
 
 cat $TMP_FILE | $SLACK_SEND_CMD -w "$WEBHOOK_URL_FILE"\
