@@ -5,7 +5,7 @@
 MYNAME=`basename $0`
 MYDIR=`dirname $0`
 
-export PATH=$PATH:/sbin:/usr/sbin:$HOME/bin
+export PATH="$PATH:/sbin:/usr/sbin:$HOME/bin"
 
 SLACK_SEND_CMD=slack-send.sh
 WEBHOOK_URL_FNAME=".webhook-url"
@@ -105,13 +105,6 @@ if [ ! -z "$*" ]; then
 fi
 
 date +'* start: %F %T %Z' > $TMP_FILE
-echo >> $TMP_FILE
-uname -a >> $TMP_FILE
-
-if [ -f /etc/os-release ]; then
-    . /etc/os-release 
-    echo $PRETTY_NAME >> $TMP_FILE
-fi
 
 if [ "$VERBOSE" = "yes" ]; then
     echo "WEBHOOK_URL_FILE=$WEBHOOK_URL_FILE"
@@ -129,9 +122,7 @@ IPADDR=`get_ipaddr`
 if [ "$VERBOSE" = "yes" ]; then
     echo "IPADDR=$IPADDR"
 fi
-echo >> $TMP_FILE
 date +'* get: %F %T %Z' >> $TMP_FILE
-echo >> $TMP_FILE
 echo "IP addr: $IPADDR" >> $TMP_FILE
 
 if [ ! -z "$HTTP_FLAG" ]; then
@@ -157,11 +148,16 @@ if [ ! -z "$HTTP_FLAG" ]; then
     echo "URL:     $URL" >> $TMP_FILE
 fi
 
-cat $TMP_FILE
+if [ -f /etc/os-release ]; then
+    . /etc/os-release 
+    echo $PRETTY_NAME >> $TMP_FILE
+fi
 
-exec $SLACK_SEND_CMD -w "$WEBHOOK_URL_FILE"\
+echo >> $TMP_FILE
+uname -a >> $TMP_FILE
+
+cat $TMP_FILE | $SLACK_SEND_CMD -w "$WEBHOOK_URL_FILE"\
      -n "$BOTNAME"\
      -c "$CHANNEL"\
      -e "$EMOJI"\
      -t "$TITLE"\
-     $TMP_FILE

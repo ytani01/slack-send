@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 #
 # (c) 2020 Yoichi Tanibayashi
 #
@@ -7,12 +7,14 @@ MYDIR=`dirname $0`
 
 WEBHOOK_URL_FNAME=".webhook-url"
 
-echo "HEAD=$HEAD"
-BOTNAME=${BOTNAME:-'ytani-bot'}
-CHANNEL=${CHANNEL:-'#notify-mail'}
-EMOJI=${EMOJI:-':e-mail:'}
-HEAD=${HEAD:-"[メール通知]\n"}
-echo "HEAD=$HEAD"
+WEBHOOK_URL_FILE=${HOME}/${WEBHOOK_URL_FNAME}
+CHANNEL="#notify-ip"
+BOTNAME=$MYNAME
+EMOJI=":computer:"
+TITLE="[NOTIFY]\n"
+URL=
+VERBOSE=no
+MSG_TMP=`mktemp -t ${MYNAME}XXX`
 
 #
 # functions
@@ -69,7 +71,7 @@ fi
 # trap "rm -v $MSG_TMP" 0
 
 if [ ! -z $1 ]; then
-    cat $* > $MSG_TMP
+    echo $* > $MSG_TMP
 else
     echo '===== Please, type message ====='
     cat - > $MSG_TMP
