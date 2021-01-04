@@ -2,7 +2,12 @@
 
 Slackにメッセージを送るシェルスクリプト
 
-応用：「slack-ipaddr.sh」IPアドレス通知
+「slack-ipaddr.sh」をラズパイなどで、
+起動時に自動実行するようにすれば、
+毎回IPアドレスをスキャンする必要がなくなります。
+
+自ホストで何らかのWebサービスを起動する場合は、
+IPアドレス入りのURLを送ることもできます。
 
 
 ## 1. Setting up
@@ -25,7 +30,7 @@ https://hooks.slack.com/service/......../......../......
 ```bash
 $ git clone https://github.com/ytani01/slack-send.git
 $ cd slack-send
-$ ./setup.sh
+$ ./install.sh
 ```
 
 
@@ -35,8 +40,14 @@ $ ./setup.sh
 
 ### 3.1 Usage
 
-```bash
+```
+slack-send.sh [-w WEBHOOK_FILE] [-n BOTNAME] [-c CHANNEL] [-e EMOJI] [-t TITLE] [MESSAGE_FILE]
+```
+
+ex.
+```
 $ echo 'message' | slack-send.sh
+$ slack-send.sh MESSAGE_FILE
 ```
 
 
@@ -49,8 +60,14 @@ IPアドレスをSlackに通知します。
 
 ### 4.1 Usage
 
-```bash
-$ slack-ipaddr.sh
+```
+slack-ipaddr.sh [-hsv] [-w WEBHOOK_URL_FILE] [-n BOT_NAME] [-c CHANNEL] [-e EMODJI] [-t TITLE] [-p PORT] [-u URL_PATH]
+
+  -h	HTTP URL flag
+  -s	HTTPS URL flag
+  -p	port number of URL
+  -u	URL path
+  -v	verbose
 ```
 
 ### 4.2 自動起動の方法
