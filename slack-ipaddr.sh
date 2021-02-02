@@ -132,11 +132,11 @@ if [ "$VERBOSE" = "yes" ]; then
     echo "IPADDR=$IPADDR"
 fi
 date +'* get: %F %T %Z' >> $TMP_FILE
-echo >> $TMP_FILE
+#echo >> $TMP_FILE
 
 echo "hostname:" `hostname` >> $TMP_FILE
 echo "IP addr: $IPADDR" >> $TMP_FILE
-echo >> $TMP_FILE
+#echo >> $TMP_FILE
 
 if [ ! -z "$HTTP_FLAG" ]; then
     if [ "$HTTP_FLAG" = "http" ]; then
