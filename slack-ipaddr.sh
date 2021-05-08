@@ -70,7 +70,8 @@ get_ipaddr() {
 
         _IPADDR=`ifconfig -a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | sed 's/^ *//' | cut -d ' ' -f 2`
         if [ ! -z "$_IPADDR" ]; then
-            echo $_IPADDR | sed 's/ .*$//'
+            #echo $_IPADDR | sed 's/ .*$//'
+            echo "$_IPADDR"
             return
         fi
 
@@ -135,7 +136,9 @@ date +'* get: %F %T %Z' >> $TMP_FILE
 #echo >> $TMP_FILE
 
 echo "hostname:" `hostname` >> $TMP_FILE
-echo "IP addr: $IPADDR" >> $TMP_FILE
+for ip in $IPADDR; do
+    echo "IP addr: $ip" >> $TMP_FILE
+done
 #echo >> $TMP_FILE
 
 if [ ! -z "$HTTP_FLAG" ]; then
