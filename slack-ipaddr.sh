@@ -2,8 +2,7 @@
 #
 # (c) 2026 Yoichi Tanibayashi
 #
-MYNAME=`basename $0`
-MYDIR=`dirname $0`
+MYNAME="$(basename $0)"
 
 export PATH="$PATH:/sbin:/usr/sbin:$HOME/bin"
 
@@ -14,7 +13,7 @@ WEBHOOK_URL_FILE=${HOME}/${WEBHOOK_URL_FNAME}
 CHANNEL='#notify-ip'
 BOTNAME=$MYNAME
 EMOJI=':computer:'
-TITLE="IP アドレス通知: `hostname`"
+TITLE="IP アドレス通知: $(hostname)"
 
 HTTP_FLAG=
 URL=
@@ -22,7 +21,7 @@ URL_PATH=
 PORT=
 VERBOSE=no
 TMP_FILE=$(mktemp "/tmp/${MYNAME}.XXX")
-trap "rm -f $TMP_FILE" EXIT
+trap 'rm -f $TMP_FILE' EXIT
 
 #
 # functions
@@ -69,7 +68,7 @@ get_ipaddr() {
             exit 1
         fi
 
-        # _IPADDR=`ifconfig -a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | sed 's/^ *//' | cut -d ' ' -f 2`
+        # _IPADDR=$(ifconfig -a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | sed 's/^ *//' | cut -d ' ' -f 2)
         if command -v ip >/dev/null 2>&1; then
             # モダンなLinux環境（iproute2）向け
             _IPADDR=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -n 1)
@@ -87,7 +86,7 @@ get_ipaddr() {
             return
         fi
 
-        _COUNT=`expr $_COUNT + 1`
+        _COUNT=$(expr "$_COUNT" + 1)
         if [ $VERBOSE = "yes" ]; then
             echo "wating IP addr ($_COUNT) .."
         fi
@@ -124,7 +123,7 @@ if [ ! -z "$*" ]; then
     exit 1
 fi
 
-date +'* start: %F %T %Z' > $TMP_FILE
+date +'* start: %F %T %Z' > "$TMP_FILE"
 
 if [ "$VERBOSE" = "yes" ]; then
     echo "WEBHOOK_URL_FILE=$WEBHOOK_URL_FILE"
@@ -138,16 +137,16 @@ if [ "$VERBOSE" = "yes" ]; then
     echo "TMP_FILE=$TMP_FILE"
 fi
 
-IPADDR=`get_ipaddr`
+IPADDR=$(get_ipaddr)
 if [ "$VERBOSE" = "yes" ]; then
     echo "IPADDR=$IPADDR"
 fi
-date +'* get: %F %T %Z' >> $TMP_FILE
+date +'* get: %F %T %Z' >> "$TMP_FILE"
 #echo >> $TMP_FILE
 
-echo "hostname:" `hostname` >> $TMP_FILE
+echo "hostname:" "$(hostname)" >> "$TMP_FILE"
 for ip in $IPADDR; do
-    echo "IP addr: $ip" >> $TMP_FILE
+    echo "IP addr: $ip" >> "$TMP_FILE"
 done
 #echo >> $TMP_FILE
 
@@ -170,18 +169,18 @@ if [ ! -z "$HTTP_FLAG" ]; then
         echo "URL=$URL"
     fi
 
-    echo "URL: $URL" >> $TMP_FILE
-    echo >> $TMP_FILE
+    echo "URL: $URL" >> "$TMP_FILE"
+    echo >> "$TMP_FILE"
 fi
 
 if [ -f /etc/os-release ]; then
     . /etc/os-release
-    echo "OS: $PRETTY_NAME" >> $TMP_FILE
-    echo >> $TMP_FILE
+    echo "OS: $PRETTY_NAME" >> "$TMP_FILE"
+    echo >> "$TMP_FILE"
 fi
 
-echo "[ uname -a ]" >> $TMP_FILE
-uname -a >> $TMP_FILE
+echo "[ uname -a ]" >> "$TMP_FILE"
+uname -a >> "$TMP_FILE"
 
 $SLACK_SEND_CMD -w "$WEBHOOK_URL_FILE"\
      -n "$BOTNAME"\
