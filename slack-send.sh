@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # (c) 2026 Yoichi Tanibayashi
 #
