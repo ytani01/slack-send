@@ -8,19 +8,19 @@ LOGDIR=$HOME/tmp
 
 CMDS="slack-send.sh slack-ipaddr.sh"
 
-cd `dirname $0`
-MYDIR=`pwd`
+cd "$(dirname $0)" || exit 1
+MYDIR=$(pwd)
 
 if [ ! -d $BINDIR ]; then
-    mkdir -pv $BINDIR
+    mkdir -pv "$BINDIR"
 fi
 
 if [ ! -d $LOGDIR ]; then
-    mkdir -pv $LOGDIR
+    mkdir -pv "$LOGDIR"
 fi
 
-cd $MYDIR
+cd "$MYDIR" || exit 2
 pwd
 for f in $CMDS; do
-    ln -sfv $MYDIR/$f $BINDIR
+    ln -sfv "$MYDIR/$f" "$BINDIR"
 done
