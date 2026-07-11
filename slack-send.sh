@@ -2,8 +2,7 @@
 #
 # (c) 2026 Yoichi Tanibayashi
 #
-MYNAME=`basename $0`
-MYDIR=`dirname $0`
+MYNAME=$(basename "$0")
 
 WEBHOOK_URL_FNAME=".webhook-url"
 
@@ -16,7 +15,7 @@ URL=
 VERBOSE=no
 MSG_FILE=
 MSG_TMP=$(mktemp "/tmp/${MYNAME}.XXX")
-trap "rm -f $MSG_TMP" EXIT
+trap 'rm -f $MSG_TMP' EXIT
 
 #
 # functions
@@ -71,7 +70,7 @@ if [ "$VERBOSE" = "yes" ]; then
 fi
 
 if [ -z "$URL" ]; then
-    URL=`cat ${WEBHOOK_URL_FILE}`
+    URL=$(cat "${WEBHOOK_URL_FILE}")
     if [ $? -ne 0 ]; then
         exit 1
     fi
@@ -81,7 +80,7 @@ if [ "$VERBOSE" = "yes" ]; then
 fi
 
 if [ ! -z "$MSG_FILE" ]; then
-    cat $MSG_FILE > $MSG_TMP
+    cat "$MSG_FILE" > "$MSG_TMP"
     if [ $? -ne 0 ]; then
         exit 1
     fi
@@ -89,7 +88,7 @@ elif [ -n "$1" ]; then
     printf "%s\n" "$*" > "$MSG_TMP"
 else
     # echo '===== Please, type message ====='
-    cat - > $MSG_TMP
+    cat - > "$MSG_TMP"
 fi
 
 # make json payload
