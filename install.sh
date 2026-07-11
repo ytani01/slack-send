@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# (c) 2020 Yoichi Tanibayashi
+# (c) 2026 Yoichi Tanibayashi
 #
 
 BINDIR=$HOME/bin

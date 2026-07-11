@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 #
-# (c) 2020 Yoichi Tanibayashi
+# (c) 2026 Yoichi Tanibayashi
 #
 MYNAME=`basename $0`
 MYDIR=`dirname $0`
@@ -21,7 +21,8 @@ URL=
 URL_PATH=
 PORT=
 VERBOSE=no
-TMP_FILE=`mktemp -t ${MYNAME}XXX`
+TMP_FILE=$(mktemp "/tmp/${MYNAME}.XXX")
+trap "rm -f $TMP_FILE" EXIT
 
 #
 # functions
@@ -68,7 +69,18 @@ get_ipaddr() {
             exit 1
         fi
 
-        _IPADDR=`ifconfig -a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | sed 's/^ *//' | cut -d ' ' -f 2`
+        # _IPADDR=`ifconfig -a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | sed 's/^ *//' | cut -d ' ' -f 2`
+        if command -v ip >/dev/null 2>&1; then
+            # モダンなLinux環境（iproute2）向け
+            _IPADDR=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -n 1)
+        elif command -v ifconfig >/dev/null 2>&1; then
+            # FreeBSD, macOS, および古いLinux環境向け
+            # (BSD系の ifconfig では grep 'inet ' のように空白を含めることで inet6 を除外可能)
+            _IPADDR=$(ifconfig -a | grep 'inet ' | grep -v '127.0.0.1' | sed 's/^ *//' | cut -d ' ' -f 2 | head -n 1)
+        else
+            echo "エラー: ip または ifconfig コマンドが見つかりません" >&2
+            exit 1
+        fi
         if [ ! -z "$_IPADDR" ]; then
             #echo $_IPADDR | sed 's/ .*$//'
             echo "$_IPADDR"
@@ -89,25 +101,23 @@ get_ipaddr() {
 #
 # main
 #
-trap "rm -f $TMP_FILE" 0
-
 while getopts hvw:c:n:e:t:HSp:u: OPT; do
     case $OPT in
-        w) WEBHOOK_URL_FILE=$OPTARG; shift;;
-        c) CHANNEL=$OPTARG; shift;;
-        n) BOTNAME=$OPTARG; shift;;
-        e) EMOJI=$OPTARG; shift;;
-        t) TITLE=$OPTARG; shift;;
+        w) WEBHOOK_URL_FILE=$OPTARG;;
+        c) CHANNEL=$OPTARG;;
+        n) BOTNAME=$OPTARG;;
+        e) EMOJI=$OPTARG;;
+        t) TITLE=$OPTARG;;
         H) HTTP_FLAG=http;;
         S) HTTP_FLAG=https;;
-        p) PORT=$OPTARG; shift;;
-        u) URL_PATH=$OPTARG; shift;;
+        p) PORT=$OPTARG;;
+        u) URL_PATH=$OPTARG;;
         v) VERBOSE=yes;;
         h) usage; exit 0;;
         *) usage; exit 1;;
     esac
-    shift
 done
+shift $((OPTIND -1))
 
 if [ ! -z "$*" ]; then
     usage
